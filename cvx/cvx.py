@@ -62,7 +62,7 @@ def rep_pyrUp(img, n):
     """
     Performs pyrUp repeated times.
     """
-    for __ in xrange(n):
+    for __ in range(n):
         img = cv2.pyrUp(img)
 
     return img
@@ -182,7 +182,7 @@ def resize(img, max_w, max_h, scale=0.75):
     return img
 
 def main():
-    print __doc__
+    print(__doc__)
 
 if __name__ == "__main__":
     main()
