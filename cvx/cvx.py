@@ -150,6 +150,10 @@ def scale(img, new_min=0.0, new_max=255.0):
     minn = img.min()
     maxx = img.max()
     sigma = maxx - minn
+
+    if sigma == 0.0:
+        return img
+
     out_img = new_min + ((img - minn)/sigma)*(new_max - new_min)
 
     return out_img

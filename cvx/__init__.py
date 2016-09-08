@@ -1,1 +1,1 @@
-from cvx import *
+from .cvx import *
