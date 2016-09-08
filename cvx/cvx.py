@@ -150,7 +150,7 @@ def scale(img, new_min=0.0, new_max=255.0):
     minn = img.min()
     maxx = img.max()
     sigma = maxx - minn
-    out_img = new_min + (img - minn)/sigma*new_max
+    out_img = new_min + ((img - minn)/sigma)*(new_max - new_min)
 
     return out_img
 
@@ -159,7 +159,7 @@ def display(img, title, to_uint8=True):
     Displays image in viewable format with useful info.
     """
     if to_uint8:
-        img = np.array(scale(img, 0, 255), dtype=np.uint8)
+        img = np.array(scale(img, 0.0, 255.0), dtype=np.uint8)
     cv2.imshow("'%s' (%s)" % (title, str_info(img)), img)
 
 def save(img, name, to_uint8=True):
@@ -167,7 +167,7 @@ def save(img, name, to_uint8=True):
     Saves image in viewable format with useful info.
     """
     if to_uint8:
-        img = np.array(scale(img, 0, 255), dtype=np.uint8)
+        img = np.array(scale(img, 0.0, 255.0), dtype=np.uint8)
     cv2.imwrite(name, img)
 
 def resize(img, max_w, max_h, scale=0.75):
