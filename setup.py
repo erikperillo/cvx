@@ -1,5 +1,6 @@
 from setuptools import setup
 
+
 setup(
     name="cvx",
     version="0.1.1",
