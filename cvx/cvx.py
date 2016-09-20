@@ -37,6 +37,12 @@ class InvalidDataType(Exception):
     """
     pass
 
+def _id(x):
+    """
+    Identity function.
+    """
+    return x
+
 def inv(img):
     """
     Inverts image.
@@ -143,9 +149,9 @@ def str_info(img):
     """
     return "dims: %s | type: %s" % (str_dim(img), str_type(img))
 
-def scale(img, new_min=0.0, new_max=255.0):
+def normalize(img):
     """
-    Scales pixels of input image to new interval.
+    Normalizes image between 0 and 1.
     """
     minn = img.min()
     maxx = img.max()
@@ -154,17 +160,21 @@ def scale(img, new_min=0.0, new_max=255.0):
     if sigma == 0.0:
         return img
 
-    out_img = new_min + ((img - minn)/sigma)*(new_max - new_min)
+    return (img - minn)/sigma
 
-    return out_img
+def scale(img, new_min=0.0, new_max=255.0):
+    """
+    Scales pixels of input image to new interval.
+    """
+    return new_min + normalize(img)*(new_max - new_min)
 
-def display(img, title, to_uint8=True):
+def display(img, title="", to_uint8=True):
     """
     Displays image in viewable format with useful info.
     """
-    if to_uint8:
+    if len(img.shape) < 3 and to_uint8:
         img = np.array(scale(img, 0.0, 255.0), dtype=np.uint8)
-    cv2.imshow("'%s' (%s)" % (title, str_info(img)), img)
+    cv2.imshow("%s (%s)" % (title, str_info(img)), img)
 
 def save(img, name, to_uint8=True):
     """
@@ -182,6 +192,37 @@ def resize(img, max_w, max_h, scale=0.75):
     while h > max_h or w > max_w:
         h, w = img.shape[:2]
         img = cv2.resize(img, tuple(map(int, (scale*w, scale*h))))
+
+    return img
+
+def morph_op(img, erosion_ksize=5, dilation_ksize=5, opening=True):
+    """!
+    Performs morphological operation on image.
+
+    @param img Binary image to apply operation.
+    @param erosion_ksize Erosion kernel size to use. If None, do not erode.
+    @param dilation_ksize Dilation kernel size to use. If None, do not dilate.
+    @param opening If true, perform opening. Else, perform closing.
+    """
+    #getting morphological transformation functions.
+    #if some kernel size is None, do not perform operation.
+    if erosion_ksize:
+        erode_kernel = np.ones(shape=2*(erosion_ksize,), dtype=img.dtype)
+        erosion = lambda x: cv2.erode(x, erode_kernel)
+    else:
+        erosion = _id
+
+    if dilation_ksize:
+        dilate_kernel = np.ones(shape=2*(dilation_ksize,), dtype=img.dtype)
+        dilation = lambda x: cv2.dilate(x, dilate_kernel)
+    else:
+        dilation = _id
+
+    first, second = (erosion, dilation) if opening else (dilation, erosion)
+
+    #applying operations
+    img = first(img)
+    img = second(img)
 
     return img
 

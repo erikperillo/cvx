@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="cvx",
-    version="0.1.2",
+    version="0.1.3",
     description="OpenCV 'extension' with routinely used methods",
     url="https://github.com/erikperillo/cvx",
     author="Erik Perillo",
