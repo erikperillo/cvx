@@ -15,6 +15,7 @@
 #You should have received a copy of the GNU General Public License
 #along with this. If not, see <http://www.gnu.org/licenses/>. 
 
+
 """
 CVX - openCV eXtension
 This module provides some constantly used CV tasks using OpenCV/numpy.
@@ -22,8 +23,10 @@ This module provides some constantly used CV tasks using OpenCV/numpy.
 by Erik Perillo <erik.perillo@gmail.com>
 """
 
+
 import numpy as np
 import cv2
+
 
 class InvalidDimensions(Exception):
     """
@@ -91,7 +94,7 @@ def fill(img, width, height, const=0):
 
 def h_append(img1, img2, put_line=False):
     """
-    Appends two images horizontally, filling them with zeros to match 
+    Appends two images horizontally, filling them with zeros to match
     dimensions if needed.
     """
     h1, w1 = img1.shape[:2]
@@ -109,7 +112,7 @@ def h_append(img1, img2, put_line=False):
 
 def v_append(img1, img2, put_line=False):
     """
-    Appends two images vertically, filling them with zeros to match 
+    Appends two images vertically, filling them with zeros to match
     dimensions if needed.
     """
     h1, w1 = img1.shape[:2]
@@ -190,12 +193,12 @@ def resize(img, max_w, max_h, scale=0.75):
     """
     h, w = img.shape[:2]
     while h > max_h or w > max_w:
-        h, w = img.shape[:2]
         img = cv2.resize(img, tuple(map(int, (scale*w, scale*h))))
+        h, w = img.shape[:2]
 
     return img
 
-def morph_op(img, erosion_ksize=5, dilation_ksize=5, opening=True):
+def morph_op(img, erosion_ksize=3, dilation_ksize=7, opening=True):
     """!
     Performs morphological operation on image.
 
@@ -205,7 +208,7 @@ def morph_op(img, erosion_ksize=5, dilation_ksize=5, opening=True):
     @param opening If true, perform opening. Else, perform closing.
     """
     #getting morphological transformation functions.
-    #if some kernel size is None, do not perform operation.
+    #if some kernel size is None/0, do not perform operation.
     if erosion_ksize:
         erode_kernel = np.ones(shape=2*(erosion_ksize,), dtype=img.dtype)
         erosion = lambda x: cv2.erode(x, erode_kernel)
